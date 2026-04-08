@@ -1,18 +1,18 @@
 <a-marker preset="hiro">
   <a-entity 
     rotation="-90 0 0" 
-    position="0 0.5 0" 
-    scale="3 3 3"
+    position="0 1 0" 
+    scale="10 10 10"
   >
     <a-entity
       id="vesak-lantern"
       gltf-model="url(./optimized_lantern.glb)" 
-      animation="property: rotation; to: 0 0 360; loop: true; dur: 15000; easing: linear"
+      animation="property: rotation; to: 0 0 360; loop: true; dur: 18000; easing: linear"
     >
       <a-light 
         type="point" 
-        intensity="4" 
-        distance="15" 
+        intensity="5" 
+        distance="20" 
         position="0 0 0"
         animation="property: color; from: #ffcc00; to: #0088ff; dur: 4000; dir: alternate; loop: true">
       </a-light>
