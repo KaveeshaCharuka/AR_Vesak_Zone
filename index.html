@@ -2,8 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Vesak AR - Tracker Fixed</title>
-    
+    <title>Vesak AR - Near Me Edition</title>
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
@@ -14,50 +13,44 @@
         bottom: 30px;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.75);
+        background: rgba(0, 0, 0, 0.8);
         color: #00ffcc;
-        padding: 15px 25px;
-        border-radius: 12px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-family: sans-serif;
         text-align: center;
         z-index: 1000;
-        width: 70%;
-        box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
         border: 1px solid #00ffcc;
       }
-      .radar-ui h3 { margin: 0 0 5px 0; font-size: 18px; color: white; }
-      .radar-ui p { margin: 0; font-size: 22px; font-weight: bold; }
     </style>
   </head>
 
   <body style="margin: 0px; overflow: hidden;">
 
     <div class="radar-ui">
-      <h3>🏮 වෙසක් කූඩුවට දුර</h3>
-      <p id="distance-text">GPS සොයමින් පවතී...</p>
+      <div style="font-size: 14px; color: white;">🏮 දුර: <span id="distance-text" style="font-weight: bold; font-size: 18px;">සොයමින්...</span></div>
     </div>
 
     <a-scene 
       vr-mode-ui="enabled: false"
       embedded 
       arjs="sourceType: webcam; debugUIEnabled: false;"
-      renderer="colorManagement: true; antialias: true; physicallyCorrectLights: true; exposure: 1.5;"
+      renderer="colorManagement: true; antialias: true; exposure: 1.5;"
       gltf-model="dracoDecoderPath: https://www.gstatic.com/draco/v1/decoders/;"
-      cursor="rayOrigin: mouse"
     >
       
-      <a-light type="ambient" intensity="2" color="#ffffff"></a-light>
+      <a-light type="ambient" intensity="2"></a-light>
       <a-light type="directional" position="2 4 2" intensity="1.5"></a-light>
 
       <a-entity
         id="vesak-lantern"
         gltf-model="url(./optimized_lantern.glb)" 
-        gps-entity-place="latitude: 7.143472; longitude: 80.584528;"
-        position="0 10 0"
-        scale="20 20 20"
+        gps-entity-place="latitude: 7.144050; longitude: 80.584555;"
+        position="0 8 0"
+        scale="15 15 15"
         animation="property: rotation; to: 0 360 0; loop: true; dur: 20000; easing: linear"
       >
-        <a-light type="point" intensity="50" distance="15" position="0 0.5 0" animation="property: color; from: #ff0000; to: #0000ff; dur: 2000; dir: alternate; loop: true"></a-light>
+        <a-light type="point" intensity="60" distance="20" animation="property: color; from: #ff0000; to: #0000ff; dur: 2000; dir: alternate; loop: true"></a-light>
       </a-entity>
 
       <a-camera gps-camera rotation-reader></a-camera>
@@ -68,20 +61,10 @@
         let lantern = document.getElementById('vesak-lantern');
         let distanceText = document.getElementById('distance-text');
 
-        // Typo එක හැදුවා: 'gps-entity-place-update-position'
         lantern.addEventListener('gps-entity-place-update-position', (event) => {
-          let distance = event.detail.distance;
-          
-          if (distance !== undefined) {
-            let distMeters = Math.round(distance);
-            distanceText.innerHTML = distMeters + " Meters";
-            
-            if(distMeters > 50) {
-              distanceText.style.color = "#ff4444"; // මීටර් 50ට වඩා දුර නම් රතු පාටින් පෙන්නයි
-            } else {
-              distanceText.style.color = "#00ffcc"; // ලඟ නම් කොළ පාටින් පෙන්නයි
-            }
-          }
+          let distMeters = Math.round(event.detail.distance);
+          distanceText.innerHTML = distMeters + " M";
+          distanceText.style.color = (distMeters < 20) ? "#00ffcc" : "#ff4444";
         });
       };
     </script>
