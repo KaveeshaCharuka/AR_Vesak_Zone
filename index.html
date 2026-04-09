@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Vesak AR - Tracker Edition</title>
+    <title>Vesak AR - Tracker Fixed</title>
     
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
@@ -53,7 +53,7 @@
         id="vesak-lantern"
         gltf-model="url(./optimized_lantern.glb)" 
         gps-entity-place="latitude: 7.143472; longitude: 80.584528;"
-        position="0 5 0"
+        position="0 10 0"
         scale="20 20 20"
         animation="property: rotation; to: 0 360 0; loop: true; dur: 20000; easing: linear"
       >
@@ -68,19 +68,18 @@
         let lantern = document.getElementById('vesak-lantern');
         let distanceText = document.getElementById('distance-text');
 
-        // AR.js වල GPS අප්ඩේට් වෙනකොට මේ event එක trigger වෙනවා
-        lantern.addEventListener('gps-entity-place-update-positon', (event) => {
+        // Typo එක හැදුවා: 'gps-entity-place-update-position'
+        lantern.addEventListener('gps-entity-place-update-position', (event) => {
           let distance = event.detail.distance;
           
-          if (distance) {
+          if (distance !== undefined) {
             let distMeters = Math.round(distance);
             distanceText.innerHTML = distMeters + " Meters";
             
-            // මීටර් 100කට වඩා දුර නම් රතු පාටින් පෙන්නනවා
-            if(distMeters > 100) {
-              distanceText.style.color = "#ff4444";
+            if(distMeters > 50) {
+              distanceText.style.color = "#ff4444"; // මීටර් 50ට වඩා දුර නම් රතු පාටින් පෙන්නයි
             } else {
-              distanceText.style.color = "#00ffcc";
+              distanceText.style.color = "#00ffcc"; // ලඟ නම් කොළ පාටින් පෙන්නයි
             }
           }
         });
