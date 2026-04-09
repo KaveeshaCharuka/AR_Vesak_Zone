@@ -2,19 +2,48 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Vesak AR - Target Location</title>
+    <title>Vesak AR - Tracker Edition</title>
+    
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+
+    <style>
+      .radar-ui {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.75);
+        color: #00ffcc;
+        padding: 15px 25px;
+        border-radius: 12px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        text-align: center;
+        z-index: 1000;
+        width: 70%;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
+        border: 1px solid #00ffcc;
+      }
+      .radar-ui h3 { margin: 0 0 5px 0; font-size: 18px; color: white; }
+      .radar-ui p { margin: 0; font-size: 22px; font-weight: bold; }
+    </style>
   </head>
 
   <body style="margin: 0px; overflow: hidden;">
+
+    <div class="radar-ui">
+      <h3>🏮 වෙසක් කූඩුවට දුර</h3>
+      <p id="distance-text">GPS සොයමින් පවතී...</p>
+    </div>
+
     <a-scene 
       vr-mode-ui="enabled: false"
       embedded 
-      arjs="sourceType: webcam; debugUIEnabled: true;"
+      arjs="sourceType: webcam; debugUIEnabled: false;"
       renderer="colorManagement: true; antialias: true; physicallyCorrectLights: true; exposure: 1.5;"
       gltf-model="dracoDecoderPath: https://www.gstatic.com/draco/v1/decoders/;"
+      cursor="rayOrigin: mouse"
     >
       
       <a-light type="ambient" intensity="2" color="#ffffff"></a-light>
@@ -25,20 +54,37 @@
         gltf-model="url(./optimized_lantern.glb)" 
         gps-entity-place="latitude: 7.143472; longitude: 80.584528;"
         position="0 5 0"
-        rotation="0 0 0"
-        scale="4 4 4"
+        scale="20 20 20"
         animation="property: rotation; to: 0 360 0; loop: true; dur: 20000; easing: linear"
       >
-        <a-light 
-          type="point" 
-          intensity="40" 
-          distance="12" 
-          position="0 0.5 0"
-          animation="property: color; from: #ff0000; to: #0000ff; dur: 2000; dir: alternate; loop: true">
-        </a-light>
+        <a-light type="point" intensity="50" distance="15" position="0 0.5 0" animation="property: color; from: #ff0000; to: #0000ff; dur: 2000; dir: alternate; loop: true"></a-light>
       </a-entity>
 
       <a-camera gps-camera rotation-reader></a-camera>
     </a-scene>
+
+    <script>
+      window.onload = () => {
+        let lantern = document.getElementById('vesak-lantern');
+        let distanceText = document.getElementById('distance-text');
+
+        // AR.js වල GPS අප්ඩේට් වෙනකොට මේ event එක trigger වෙනවා
+        lantern.addEventListener('gps-entity-place-update-positon', (event) => {
+          let distance = event.detail.distance;
+          
+          if (distance) {
+            let distMeters = Math.round(distance);
+            distanceText.innerHTML = distMeters + " Meters";
+            
+            // මීටර් 100කට වඩා දුර නම් රතු පාටින් පෙන්නනවා
+            if(distMeters > 100) {
+              distanceText.style.color = "#ff4444";
+            } else {
+              distanceText.style.color = "#00ffcc";
+            }
+          }
+        });
+      };
+    </script>
   </body>
 </html>
